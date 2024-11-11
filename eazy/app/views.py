@@ -21,12 +21,12 @@ def eazy_login(req):
             return redirect(home)
         else:
             messages.warning(req,'Invalid username or password.')
-            return redirect(arms_login)
+            return redirect(eazy_login)
     else:
         return render(req,'login.html')
     
 def home(req):
-    if 'arms' in req.session:
+    if 'eazy' in req.session:
         data=Product.objects.all()
         return render(req,'shop/home.html',{'data':data})
     else:
@@ -52,10 +52,10 @@ def add_prod(req):
         else:
             return render(req,'shop/add_prod.html')
     else:
-        return redirect(arms_login)
+        return redirect(eazy_login)
     
 def edit(req,pid):
-    if 'arms' in req.session:
+    if 'eazy' in req.session:
         if req.method=='POST':
             prd_id=req.POST['prd_id']
             prd_name=req.POST['prd_name']
@@ -75,7 +75,7 @@ def edit(req,pid):
             data=Product.objects.get(pk=pid)
             return render(req,'shop/edit.html',{'product':data})
     else:
-        return redirect(arms_login)
+        return redirect(eazy_login)
 
 def delete(req,pid):
     data=Product.objects.get(pk=pid)
