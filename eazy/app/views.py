@@ -9,7 +9,7 @@ from django.contrib import messages
 # Create your views here.
 
 def eazy_login(req):
-    if 'arms' in req.session:
+    if 'eazy' in req.session:
         return redirect(home)
     if req.method=='POST':
         uname=req.POST['uname']
@@ -17,7 +17,7 @@ def eazy_login(req):
         data=authenticate(username=uname,password=password)
         if data:
             login(req,data)
-            req.session['arms']=uname   #create session
+            req.session['eazy']=uname   #create session
             return redirect(home)
         else:
             messages.warning(req,'Invalid username or password.')
@@ -35,18 +35,18 @@ def home(req):
 def eazy_logout(req):
     req.session.flush()          #delete session
     logout(req)
-    return redirect(eazy_logout)
+    return redirect(eazy_login)
 
 def add_prod(req):
-    if 'arms' in req.session:
+    if 'eazy' in req.session:
         if req.method=='POST':
             prd_id=req.POST['prd_id']
             prd_name=req.POST['prd_name']
             prd_price=req.POST['prd_price']
             ofr_price=req.POST['ofr_price']
             img=req.FILES['img']
-            rtng=req.POST['rtng']
-            data=Product.objects.create(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price,img=img,rating=rtng)
+            
+            data=Product.objects.create(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price,img=img)
             data.save()
             return redirect(add_prod)
         else:
@@ -61,15 +61,15 @@ def edit(req,pid):
             prd_name=req.POST['prd_name']
             prd_price=req.POST['prd_price']
             ofr_price=req.POST['ofr_price']
-            rtng=req.POST['rtng']
+            
             img=req.FILES.get('img')
             if img:
-                Product.objects.filter(pk=pid).update(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price,rating=rtng)
+                Product.objects.filter(pk=pid).update(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price)
                 data=Product.objects.get(pk=pid)
                 data.img=img
                 data.save()
             else:
-                Product.objects.filter(pk=pid).update(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price,rating=rtng)
+                Product.objects.filter(pk=pid).update(pro_id=prd_id,name=prd_name,price=prd_price,offer_price=ofr_price)
             return redirect(home)
         else:
             data=Product.objects.get(pk=pid)
